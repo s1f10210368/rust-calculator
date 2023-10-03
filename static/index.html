@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<body>
+
+<h2>簡単な電卓</h2>
+
+<form id="calc">
+  <input type="number" id="a" required>
+  <select id="op">
+    <option value="/add">+</option>
+    <option value="/sub">-</option>
+    <option value="/mul">*</option>
+    <option value="/div">/</option>
+  </select>
+  <input type="number" id="b" required>
+  <button type="submit">=</button>
+  <span id="result"></span>
+</form>
+
+<script>
+document.getElementById('calc').addEventListener('submit', function(e) {
+  e.preventDefault();
+  var a = document.getElementById('a').value;
+  var b = document.getElementById('b').value;
+  var op = document.getElementById('op').value;
+  fetch('http://127.0.0.1:8080' + op, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: 'a=' + encodeURIComponent(a) + '&b=' + encodeURIComponent(b),
+  })
+  .then(function(response) {
+    if (response.ok) {
+      return response.text();
+    } else {
+      throw new Error('Error: ' + response.statusText);
+    }
+  })
+  .then(function(text) {
+    document.getElementById('result').textContent = text;
+  })
+  .catch(function(error) {
+    console.error(error);
+  });
+});
+</script>
+
+</body>
+</html>
